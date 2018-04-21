@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -150,11 +151,7 @@ public class Level {
 		
 		for(Particle particle: particles) {
 			
-			if(particles.indexOf(particle) > 100 && particles.indexOf(particle) < 290) {
-				main.shapeRenderer.setColor(Color.BLUE);
-			} else {
-				main.shapeRenderer.setColor(Color.WHITE);
-			}
+			main.shapeRenderer.setColor(Color.BLUE);
 			
 			main.shapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, Particle.getRadius());
 		}
@@ -182,8 +179,9 @@ public class Level {
 		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-			for(int i = 100; i < 290; i++) {
-				particles.get(i).body.applyForceToCenter(new Vector2(0, -100).scl(50000), true);
+			for(int i = 0; i < particles.size(); i++) {
+				Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX() - Gdx.graphics.getWidth()/2, Gdx.input.getY() + Gdx.graphics.getHeight()/2, 0)).nor();
+				particles.get(i).body.applyForceToCenter(new Vector2(mousePos.x, mousePos.y).scl(50000), true);
 			}
 		}
 		
