@@ -3,6 +3,7 @@ package com.ajayinkingston.ld41;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -83,7 +84,7 @@ public class Level {
 			main.shapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, particle.getRadius());
 		}
 		
-		if(Gdx.input.isTouched()) {
+		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			BodyDef bodyDef = new BodyDef();
 	        bodyDef.type = BodyDef.BodyType.DynamicBody;
 	        
@@ -103,6 +104,12 @@ public class Level {
 	        Fixture fixture = body.createFixture(fixtureDef);
 	        
 			particles.add(new Particle(body));
+		}
+		
+		if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+			for(int i = 30; i < 30; i++) {
+				particles.get(i).body.applyForceToCenter(new Vector2(0, -100).scl(50000), true);
+			}
 		}
 		
 		main.shapeRenderer.end();
