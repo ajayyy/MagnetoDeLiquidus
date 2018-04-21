@@ -24,7 +24,7 @@ public class Level {
 		this.main = main;
 		
 		
-		world = new World(new Vector2(0, -10), true);
+		world = new World(new Vector2(0, -70), true);
 		
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -81,6 +81,28 @@ public class Level {
 		
 		for(Particle particle: particles) {
 			main.shapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, particle.getRadius());
+		}
+		
+		if(Gdx.input.isTouched()) {
+			BodyDef bodyDef = new BodyDef();
+	        bodyDef.type = BodyDef.BodyType.DynamicBody;
+	        
+	        PolygonShape shape = new PolygonShape();
+	        shape.setAsBox(Particle.getRadius(), Particle.getRadius());
+			
+			bodyDef.position.set(Gdx.input.getX(), Gdx.input.getY());
+	        
+	        Body body = world.createBody(bodyDef);
+
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = shape;
+	        fixtureDef.density = 1f;
+	        fixtureDef.friction = 1f;
+	        fixtureDef.restitution = 0.5f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+			particles.add(new Particle(body));
 		}
 		
 		main.shapeRenderer.end();
