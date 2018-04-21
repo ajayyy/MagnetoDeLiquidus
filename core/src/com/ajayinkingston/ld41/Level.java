@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -41,8 +42,8 @@ public class Level {
 	        FixtureDef fixtureDef = new FixtureDef();
 	        fixtureDef.shape = shape;
 	        fixtureDef.density = 1f;
-	        fixtureDef.friction = 1f;
-	        fixtureDef.restitution = 0.5f;
+	        fixtureDef.friction = 0.01f;
+//	        fixtureDef.restitution = 0.5f;
 	        
 	        Fixture fixture = body.createFixture(fixtureDef);
 	        
@@ -53,22 +54,89 @@ public class Level {
         // Shape is the only disposable of the lot, so get rid of it
         shape.dispose();
         
-        BodyDef groundDef = new BodyDef();
-        groundDef.type = BodyDef.BodyType.KinematicBody;
+        {
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(10000, Particle.getRadius());
+	        
+	        groundDef.position.set(0, 0);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
         
-        PolygonShape ground = new PolygonShape();
-        ground.setAsBox(10000, Particle.getRadius());
+        {
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(5, 10000);
+	        
+	        groundDef.position.set(0, 0);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
         
-        groundDef.position.set(0, 0);
+        {
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(10000, Particle.getRadius());
+	        
+	        groundDef.position.set(0, 0);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
         
-        Body body = world.createBody(groundDef);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = ground;
-        fixtureDef.density = 0.00000001f;
-        fixtureDef.friction = 1f;
-        
-        Fixture fixture = body.createFixture(fixtureDef);
+        {
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(10000, Particle.getRadius());
+	        
+	        groundDef.position.set(0, 0);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
         
         particles.get(0).body.applyForceToCenter(new Vector2(50000, 0), true);
 	}
@@ -81,7 +149,14 @@ public class Level {
 		main.shapeRenderer.begin(ShapeType.Filled);
 		
 		for(Particle particle: particles) {
-			main.shapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, particle.getRadius());
+			
+			if(particles.indexOf(particle) > 100 && particles.indexOf(particle) < 290) {
+				main.shapeRenderer.setColor(Color.BLUE);
+			} else {
+				main.shapeRenderer.setColor(Color.WHITE);
+			}
+			
+			main.shapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, Particle.getRadius());
 		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
@@ -99,7 +174,7 @@ public class Level {
 	        fixtureDef.shape = shape;
 	        fixtureDef.density = 1f;
 	        fixtureDef.friction = 1f;
-	        fixtureDef.restitution = 0.5f;
+//	        fixtureDef.restitution = 0.5f;
 	        
 	        Fixture fixture = body.createFixture(fixtureDef);
 	        
@@ -107,7 +182,7 @@ public class Level {
 		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-			for(int i = 30; i < 30; i++) {
+			for(int i = 100; i < 290; i++) {
 				particles.get(i).body.applyForceToCenter(new Vector2(0, -100).scl(50000), true);
 			}
 		}
