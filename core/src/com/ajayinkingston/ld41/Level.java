@@ -27,7 +27,7 @@ public class Level {
 		this.main = main;
 		
 		
-		world = new World(new Vector2(0, -70), true);
+		world = new World(new Vector2(0, -0), true);
 		
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -104,7 +104,7 @@ public class Level {
 	        PolygonShape ground = new PolygonShape();
 	        ground.setAsBox(10000, Particle.getRadius());
 	        
-	        groundDef.position.set(0, 0);
+	        groundDef.position.set(0, Gdx.graphics.getHeight());
 	        
 	        Body body = world.createBody(groundDef);
 	
@@ -123,9 +123,9 @@ public class Level {
 	        groundDef.type = BodyDef.BodyType.KinematicBody;
 	        
 	        PolygonShape ground = new PolygonShape();
-	        ground.setAsBox(10000, Particle.getRadius());
+	        ground.setAsBox(5, 10000);
 	        
-	        groundDef.position.set(0, 0);
+	        groundDef.position.set(Gdx.graphics.getWidth(), 0);
 	        
 	        Body body = world.createBody(groundDef);
 	
@@ -157,13 +157,15 @@ public class Level {
 		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			
 			BodyDef bodyDef = new BodyDef();
 	        bodyDef.type = BodyDef.BodyType.DynamicBody;
 	        
 	        PolygonShape shape = new PolygonShape();
 	        shape.setAsBox(Particle.getRadius(), Particle.getRadius());
 			
-			bodyDef.position.set(Gdx.input.getX(), Gdx.input.getY());
+			bodyDef.position.set(mousePos.x, mousePos.y);
 	        
 	        Body body = world.createBody(bodyDef);
 
