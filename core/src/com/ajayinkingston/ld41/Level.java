@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -32,8 +33,8 @@ public class Level {
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(Particle.getRadius(), Particle.getRadius());
+        CircleShape shape = new CircleShape();
+        shape.setRadius(Particle.getRadius());
 		
 		for(int i = 0; i < 30; i++) {
 	        bodyDef.position.set(20 + i * 15, Gdx.graphics.getHeight() / 2 + (i == 0 ? 30 : 0));
@@ -162,8 +163,8 @@ public class Level {
 			BodyDef bodyDef = new BodyDef();
 	        bodyDef.type = BodyDef.BodyType.DynamicBody;
 	        
-	        PolygonShape shape = new PolygonShape();
-	        shape.setAsBox(Particle.getRadius(), Particle.getRadius());
+	        CircleShape shape = new CircleShape();
+	        shape.setRadius(Particle.getRadius());
 			
 			bodyDef.position.set(mousePos.x, mousePos.y);
 	        
