@@ -182,8 +182,11 @@ public class Level {
 		
 		if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
 			for(int i = 0; i < particles.size(); i++) {
-				Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX() - Gdx.graphics.getWidth()/2, Gdx.input.getY() + Gdx.graphics.getHeight()/2, 0)).nor();
-				particles.get(i).body.applyForceToCenter(new Vector2(mousePos.x, mousePos.y).scl(50000), true);
+				Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+				
+				Vector2 dir = particles.get(i).getPosition().sub(mousePos.x, mousePos.y).nor();
+				
+				particles.get(i).body.applyForceToCenter(dir.scl(50000), true);
 			}
 		}
 		
