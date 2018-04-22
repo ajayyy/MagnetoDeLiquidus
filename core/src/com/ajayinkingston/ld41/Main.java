@@ -35,6 +35,8 @@ public class Main extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		((OrthographicCamera) cam).setToOrtho(false, width, height);
 		resizeBatch(cam.combined);
+		
+		level.resize(width, height);
 	}
 	
 	public void resizeBatch(Matrix4 matrix) {
