@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -24,9 +26,20 @@ public class Level {
 	
 	ArrayList<Particle> particles = new ArrayList<>();
 	
+	ShaderProgram particleShader;
+	
+	Texture particleImage;
+	
 	public Level(Main main) {
 		this.main = main;
 		
+		particleImage = new Texture("white.png");
+		
+		//partcile shader
+		particleShader = new ShaderProgram(Gdx.files.internal("shaders/particle.vsh"), Gdx.files.internal("shaders/particle.fsh"));
+		
+		System.out.println(Gdx.files.internal("shaders/particle.vsh").readString());
+		particleShader.pedantic = false;
 		
 		world = new World(new Vector2(0, -0), true);
 		
@@ -145,16 +158,18 @@ public class Level {
 	
 	public void render() {
 		
-		
 		world.step(1/60f, 6, 2);
 
-		main.shapeRenderer.begin(ShapeType.Filled);
+		particleShader.begin();
+		main.batch.begin();
+		
+		main.batch.setShader(particleShader);
 		
 		for(Particle particle: particles) {
 			
-			main.shapeRenderer.setColor(Color.BLUE);
+			main.batch.draw(particleImage, particle.body.getPosition().x - Particle.getRadius(), particle.body.getPosition().y - Particle.getRadius(), Particle.getRadius() * 2, Particle.getRadius() * 2);
 			
-			main.shapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, Particle.getRadius());
+//			particleShapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, Particle.getRadius());
 		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
@@ -191,7 +206,8 @@ public class Level {
 			}
 		}
 		
-		main.shapeRenderer.end();
+		main.batch.end();
+		particleShader.end();
 	}
 	
 	public void update() {

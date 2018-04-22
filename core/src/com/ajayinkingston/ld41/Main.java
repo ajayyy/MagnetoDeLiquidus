@@ -34,9 +34,9 @@ public class Main extends ApplicationAdapter {
 		cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
 		
 		level = new Level(this);
-		
 	}
 	
+	@Override
 	public void resize(int width, int height) {
 		cam.viewportWidth = width * 1f;
      	cam.viewportHeight = height * 1f;
