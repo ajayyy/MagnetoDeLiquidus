@@ -23,9 +23,9 @@ public class Clouds {
 		
 		for(int i = 0; i < clouds.length; i++) {
 			
-			positions[i] = new Vector2(i * 500, (float) (random.nextInt(Gdx.graphics.getHeight() - 300)));
-			
 			clouds[i] = new Texture("cloud" + i + ".png");
+			
+			positions[i] = new Vector2(i * 500, (float) (random.nextInt(Gdx.graphics.getHeight() - clouds[i].getHeight())));
 		}
 	}
 	
@@ -46,6 +46,7 @@ public class Clouds {
 			positions[i].x += speeds[i] * Gdx.graphics.getDeltaTime();
 			
 			if(positions[i].x > Gdx.graphics.getWidth()) {
+				positions[i].y = (float) (random.nextInt(Gdx.graphics.getHeight() - clouds[i].getHeight()));
 				positions[i].x = -clouds[i].getWidth();
 			}
 		}
