@@ -28,17 +28,20 @@ public class Level {
 	
 	ArrayList<Particle> particles = new ArrayList<>();
 	
-	ShaderProgram particleShader;
+	ShaderProgram blurShader;
 	
 	Texture particleImage;
 	
 	FrameBuffer allParticles;
+	FrameBuffer horizontallyBlurredParticles;
+	FrameBuffer verticallyBlurredParticles;
 	TextureRegion fboRegion;
 	
 	public Level(Main main) {
 		this.main = main;
 		
 		allParticles = new FrameBuffer(Format.RGBA8888, 1000, 600, false);
+		horizontallyBlurredParticles = new FrameBuffer(Format.RGBA8888, 1000, 600, false);
 		
 		fboRegion = new TextureRegion(allParticles.getColorBufferTexture());
 		fboRegion.flip(false, true);
@@ -46,10 +49,10 @@ public class Level {
 		particleImage = new Texture("white.png");
 		
 		//partcile shader
-		particleShader = new ShaderProgram(Gdx.files.internal("shaders/particle.vsh"), Gdx.files.internal("shaders/particle.fsh"));
+		blurShader = new ShaderProgram(Gdx.files.internal("shaders/blur.vsh"), Gdx.files.internal("shaders/blur.fsh"));
 		
-		if (particleShader.getLog().length()!=0)
-			System.out.println(particleShader.getLog());
+		if (blurShader.getLog().length()!=0)
+			System.out.println(blurShader.getLog());
 		
 		ShaderProgram.pedantic = false;
 		
@@ -225,19 +228,38 @@ public class Level {
 		main.batch.flush();
 		allParticles.end();
 		
-		particleShader.begin();
+		horizontallyBlurredParticles.begin();
+		//clear frame buffer
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		main.batch.setShader(particleShader);
-		particleShader.setUniformf("dir", 1f, 0f);
-		particleShader.setUniformf("resolution", 1000*600);
-		particleShader.setUniformf("radius", 20f);
+		blurShader.begin();
+		
+		main.batch.setShader(blurShader);
+		blurShader.setUniformf("dir", 1f, 0f);
+		blurShader.setUniformf("resolution", 1000*600);
+		blurShader.setUniformf("radius", 20f);
 		
 		fboRegion.setTexture(allParticles.getColorBufferTexture());
 		
 		main.batch.draw(fboRegion, 0, 0);
 		
+		main.batch.flush();
+		horizontallyBlurredParticles.end();
+		
+		//now do a vertical blur
+		
+		main.batch.setShader(blurShader);
+		blurShader.setUniformf("dir", 0f, 1f);
+		blurShader.setUniformf("resolution", 1000*600);
+		blurShader.setUniformf("radius", 20f);
+		
+		fboRegion.setTexture(horizontallyBlurredParticles.getColorBufferTexture());
+		
+		main.batch.draw(fboRegion, 0, 0);
+		
 		main.batch.end();
-		particleShader.end();
+		blurShader.end();
 
 	}
 	
