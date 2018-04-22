@@ -63,7 +63,7 @@ public class Level {
 		
 		ShaderProgram.pedantic = false;
 		
-		world = new World(new Vector2(0, -70), true);
+		world = new World(new Vector2(0, -0), true);
 		
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -180,7 +180,7 @@ public class Level {
 	
 	public void render() {
 		
-		world.step(1/60f, 6, 2);
+		world.step(1f, 6, 2);
 		
 		allParticles.begin();
 		//clear frame buffer
@@ -240,7 +240,7 @@ public class Level {
 		
 		blur(allParticles);
 		
-		for(int i = 0; i < 105; i++) {
+		for(int i = 0; i < 30; i++) {
 			blur(verticallyBlurredParticles);
 		}
 		
