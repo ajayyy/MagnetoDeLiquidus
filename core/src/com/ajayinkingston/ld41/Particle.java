@@ -18,7 +18,7 @@ public class Particle {
 	}
 	
 	public static float getRadius() {
-		return 50;
+		return 5;
 	}
 	
 	public Vector2 getPosition() {

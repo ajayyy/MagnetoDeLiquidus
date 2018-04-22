@@ -18,13 +18,13 @@ void main() {
 	//the amount to blur, i.e. how far off center to sample from 
 	//1.0 -> blur by one pixel
 	//2.0 -> blur by two pixels, etc.
-	float blur = 0.05; 
+	float blur = 0.005; 
     
 	//the direction of our blur
 	//(1.0, 0.0) -> x-axis blur
 	//(0.0, 1.0) -> y-axis blur
-	float hstep = 1.0;
-	float vstep = 0.0;
+	float hstep = dir.x;
+	float vstep = dir.y;
     
 	//apply blurring, using a 9-tap filter with predefined gaussian weights
     

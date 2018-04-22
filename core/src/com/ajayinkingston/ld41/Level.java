@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -30,8 +32,16 @@ public class Level {
 	
 	Texture particleImage;
 	
+	FrameBuffer allParticles;
+	TextureRegion fboRegion;
+	
 	public Level(Main main) {
 		this.main = main;
+		
+		allParticles = new FrameBuffer(Format.RGBA8888, 1000, 600, false);
+		
+		fboRegion = new TextureRegion(allParticles.getColorBufferTexture());
+		fboRegion.flip(false, true);
 		
 		particleImage = new Texture("white.png");
 		
@@ -41,7 +51,7 @@ public class Level {
 		if (particleShader.getLog().length()!=0)
 			System.out.println(particleShader.getLog());
 		
-		particleShader.pedantic = false;
+		ShaderProgram.pedantic = false;
 		
 		world = new World(new Vector2(0, -0), true);
 		
@@ -162,16 +172,14 @@ public class Level {
 		
 		world.step(1/60f, 6, 2);
 		
-		particleShader.begin();
-
+		allParticles.begin();
+		//clear frame buffer
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		main.batch.begin();
 		
-		main.batch.setShader(particleShader);
-		
-		particleShader.setUniformf("dir", 1f, 0f);
-		particleShader.setUniformf("resolution", 1000*600);
-		//determine radius of blur based on mouse position
-		particleShader.setUniformf("radius", 20f);
+		main.batch.setShader(null);
 		
 		for(Particle particle: particles) {
 			
@@ -214,8 +222,23 @@ public class Level {
 			}
 		}
 		
+		main.batch.flush();
+		allParticles.end();
+		
+		particleShader.begin();
+		
+		main.batch.setShader(particleShader);
+		particleShader.setUniformf("dir", 1f, 0f);
+		particleShader.setUniformf("resolution", 1000*600);
+		particleShader.setUniformf("radius", 20f);
+		
+		fboRegion.setTexture(allParticles.getColorBufferTexture());
+		
+		main.batch.draw(fboRegion, 0, 0);
+		
 		main.batch.end();
 		particleShader.end();
+
 	}
 	
 	public void update() {
