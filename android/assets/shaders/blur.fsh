@@ -7,8 +7,7 @@ uniform sampler2D u_texture;
 uniform float resolution;
 uniform vec2 dir;
 
-void main() {
-	
+void blur() {
 	vec4 ocolor = texture2D(u_texture, vTexCoord) * vColor;
 	
 	vec4 color = vec4(0.0);
@@ -22,5 +21,10 @@ void main() {
 	color += texture2D(u_texture, vTexCoord - (off2 / resolution)) * 0.09447039785044732;
 	color += texture2D(u_texture, vTexCoord + (off3 / resolution)) * 0.010381362401148057;
 	color += texture2D(u_texture, vTexCoord - (off3 / resolution)) * 0.010381362401148057;
+	
 	gl_FragColor = color;
+}
+
+void main() {
+	blur();
 }

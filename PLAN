@@ -8,3 +8,10 @@ Combine (tractor) game
 Metal + Water puzzle game
 
 next maybe shoot some particles from mouse as test
+
+new idea, forget about conflicting particles, just fill blank space with particles
+
+next idea, organise the area into chunks and make certain chunks colored if enough particles are in them.
+
+if > 5, coompletely
+if > 3, split and check, then form blobs

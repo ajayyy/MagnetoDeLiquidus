@@ -63,7 +63,7 @@ public class Level {
 		
 		ShaderProgram.pedantic = false;
 		
-		world = new World(new Vector2(0, -0), true);
+		world = new World(new Vector2(0, -70), true);
 		
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -238,37 +238,11 @@ public class Level {
 		main.batch.flush();
 		allParticles.end();
 		
-		horizontallyBlurredParticles.begin();
+		blur(allParticles);
 		
-		blurShader.begin();
-		
-		main.batch.setShader(blurShader);
-		blurShader.setUniformf("dir", 2.7f, 0f);
-		blurShader.setUniformf("resolution", 1000);
-		
-		fboRegion.setTexture(allParticles.getColorBufferTexture());
-		fboRegion.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		main.batch.draw(fboRegion, 0, 0);
-		
-		main.batch.flush();
-		horizontallyBlurredParticles.end();
-		
-		verticallyBlurredParticles.begin();
-		
-		//now do a vertical blur
-		main.batch.setShader(blurShader);
-		blurShader.setUniformf("dir", 0f, 2.7f);
-		blurShader.setUniformf("resolution", 600);
-		
-		fboRegion.setTexture(horizontallyBlurredParticles.getColorBufferTexture());
-		fboRegion.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		main.batch.draw(fboRegion, 0, 0);
-		
-		main.batch.flush();
-		verticallyBlurredParticles.end();
-		blurShader.end();
+		for(int i = 0; i < 105; i++) {
+			blur(verticallyBlurredParticles);
+		}
 		
 		//resize the batch back to normal
 		main.resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -287,6 +261,40 @@ public class Level {
 		main.batch.end();
 		flattenShader.end();
 
+	}
+	
+	public void blur(FrameBuffer start) {
+		horizontallyBlurredParticles.begin();
+		
+		blurShader.begin();
+		
+		main.batch.setShader(blurShader);
+		blurShader.setUniformf("dir", 1f, 0f);
+		blurShader.setUniformf("resolution", 1000);
+		
+		fboRegion.setTexture(start.getColorBufferTexture());
+		fboRegion.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		main.batch.draw(fboRegion, 0, 0);
+		
+		main.batch.flush();
+		horizontallyBlurredParticles.end();
+		
+		verticallyBlurredParticles.begin();
+		
+		//now do a vertical blur
+		main.batch.setShader(blurShader);
+		blurShader.setUniformf("dir", 0f, 1f);
+		blurShader.setUniformf("resolution", 600);
+		
+		fboRegion.setTexture(horizontallyBlurredParticles.getColorBufferTexture());
+		fboRegion.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		main.batch.draw(fboRegion, 0, 0);
+		
+		main.batch.flush();
+		verticallyBlurredParticles.end();
+		blurShader.end();
 	}
 	
 	public void update() {
