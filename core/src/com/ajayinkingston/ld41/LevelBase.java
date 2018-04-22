@@ -8,4 +8,6 @@ public class LevelBase {
 	
 	int width;
 	int height;
+	
+	int startAmount;
 }

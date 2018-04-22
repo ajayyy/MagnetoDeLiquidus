@@ -11,7 +11,7 @@ public class Level {
 	public Level(Main main, LevelBase levelLoaded) {
 		this.main = main;
 		
-		particleBox = new ParticleBox(main, levelLoaded.width, levelLoaded.height, levelLoaded.holes, levelLoaded.boxes);
+		particleBox = new ParticleBox(main, levelLoaded);
 		
 		clouds = new Clouds(main);
 	}
@@ -28,6 +28,8 @@ public class Level {
 	
 	public void update() {
 		particleBox.update();
+		
+		System.out.println(particleBox.particles.size()/(float)particleBox.loadedLevel.startAmount);
 		
 		clouds.update();
 	}

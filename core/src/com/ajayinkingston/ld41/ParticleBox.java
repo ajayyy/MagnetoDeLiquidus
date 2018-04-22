@@ -46,17 +46,21 @@ public class ParticleBox {
 	//to make the box centered there is an offset
 	int offsetx, offsety;
 	
+	LevelBase loadedLevel;
+	
 	//all of the holes in the wall
 	ArrayList<Hole> holes = new ArrayList<Hole>();
 	ArrayList<Box> boxes = new ArrayList<Box>();
 	
-	public ParticleBox(Main main, int width, int height, ArrayList<Hole> holes, ArrayList<Box> boxes) {
+	public ParticleBox(Main main, LevelBase loadedLevel) {
 		this.main = main;
 		
-		this.width = width;
-		this.height = height;
-		this.holes = holes;
-		this.boxes = boxes;
+		this.loadedLevel = loadedLevel;
+		
+		this.width = loadedLevel.width;
+		this.height = loadedLevel.height;
+		this.holes = loadedLevel.holes;
+		this.boxes = loadedLevel.boxes;
 		
 		allParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
 		horizontallyBlurredParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
@@ -87,8 +91,8 @@ public class ParticleBox {
         CircleShape shape = new CircleShape();
         shape.setRadius(Particle.getRadius());
 		
-		for(int i = 0; i < 30; i++) {
-	        bodyDef.position.set(20 + i * 15, Gdx.graphics.getHeight() / 2 + (i == 0 ? 30 : 0));
+		for(int i = 0; i < loadedLevel.startAmount; i++) {
+	        bodyDef.position.set(20 + i * 15, Gdx.graphics.getHeight() / 2);
 	        
 	        Body body = world.createBody(bodyDef);
 
@@ -108,8 +112,6 @@ public class ParticleBox {
         shape.dispose();
         
         generateWalls();
-        
-        particles.get(0).body.applyForceToCenter(new Vector2(50000, 0), true);
 	}
 	
 	public void prerender() {
@@ -263,6 +265,13 @@ public class ParticleBox {
 	
 	public void update() {
 		world.step(1f, 6, 2);
+		
+		//check if any particles have left the area
+		for(Particle particle : new ArrayList<Particle>(particles)) {
+			if(particle.getPosition().x < 0 || particle.getPosition().x > width || particle.getPosition().y < 0 || particle.getPosition().y > height) {
+				particles.remove(particle);
+			}
+		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).sub(offsetx, offsety, 0);
