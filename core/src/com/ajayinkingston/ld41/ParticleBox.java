@@ -57,7 +57,7 @@ public class ParticleBox {
 		this.height = height;
 		
 		//add all of the holes
-		holes.add(new Hole(150, 300, 0));
+		holes.add(new Hole(150, 300, 2));
 		
 		//add all the boxes
 		boxes.add(new Box(100, 200, 100, 100));
@@ -308,9 +308,9 @@ public class ParticleBox {
         groundDef.type = BodyDef.BodyType.KinematicBody;
         
         PolygonShape ground = new PolygonShape();
-        ground.setAsBox(width, height);
+        ground.setAsBox(width/2, height/2);
         
-        groundDef.position.set(x, y);
+        groundDef.position.set(x + width/2, y + height/2);
         
         Body body = world.createBody(groundDef);
 
@@ -335,43 +335,41 @@ public class ParticleBox {
 		for(Hole hole : holes) {
 			switch(hole.side) {
 			case 0:
-				createWall(0, leftLastDrawn, Particle.getRadius(), hole.start - leftLastDrawn);
+				createWall(0, leftLastDrawn, thickness, hole.start - leftLastDrawn);
 				leftLastDrawn = hole.end;
 				break;
 			case 1:
-				main.shapeRenderer.rect(offsetx + width, offsety + rightLastDrawn, thickness, hole.start - rightLastDrawn);
+				createWall(width, rightLastDrawn, thickness, hole.start - rightLastDrawn);
 				rightLastDrawn = hole.end;
 				break;
 			case 2:
-				main.shapeRenderer.rect(offsetx - thickness + topLastDrawn, offsety - thickness, hole.start - topLastDrawn, thickness);
+				createWall(topLastDrawn - thickness, - thickness, hole.start - topLastDrawn, thickness);
 				topLastDrawn = hole.end;
 				break;
 			case 3:
-				main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, hole.start - bottomLastDrawn, thickness);
+				createWall(bottomLastDrawn - thickness, height - thickness, hole.start - bottomLastDrawn, thickness);
 				bottomLastDrawn = hole.end;
 			}
 		}
 		
 		if(leftLastDrawn < height) {
-			createWall(0, leftLastDrawn + 200, Particle.getRadius(), height - leftLastDrawn);
+			createWall(0, leftLastDrawn, Particle.getRadius(), height - leftLastDrawn);
 		}
-//		if(rightLastDrawn < height) {
-//			main.shapeRenderer.rect(offsetx + width, offsety + rightLastDrawn, thickness, height - rightLastDrawn);
-//		}
-//		
-//		if(topLastDrawn < width + thickness * 2) {
-//			main.shapeRenderer.rect(offsetx - thickness + topLastDrawn, offsety - thickness, width + thickness * 2 - topLastDrawn, thickness);
-//		}
-//		if(bottomLastDrawn < width + thickness * 2) {
-//			main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
-//		}
+		if(rightLastDrawn < height) {
+			createWall(width, rightLastDrawn, Particle.getRadius(), height - rightLastDrawn);
+		}
 		
-//		createWall(0, 0, Particle.getRadius(), height);
+		if(topLastDrawn < width + thickness * 2) {
+			createWall(- thickness + topLastDrawn, - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
+		}
+		if(bottomLastDrawn < width + thickness * 2) {
+			createWall(- thickness + topLastDrawn, height - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
+		}
 		
-		createWall(width, 0, Particle.getRadius(), height);
+		//create walls for the boxes
 		
-		createWall(0, height, width, Particle.getRadius());
-		
-		createWall(0, 0, width, Particle.getRadius());
+		for(Box box : boxes) {
+			createWall(box.x, box.y, box.width, box.height);
+		}
 	}
 }
