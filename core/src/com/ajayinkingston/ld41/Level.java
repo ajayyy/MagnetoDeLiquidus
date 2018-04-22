@@ -8,10 +8,10 @@ public class Level {
 	
 	Clouds clouds;
 	
-	public Level(Main main) {
+	public Level(Main main, LevelBase levelLoaded) {
 		this.main = main;
 		
-		particleBox = new ParticleBox(main, 400, 500);
+		particleBox = new ParticleBox(main, levelLoaded.width, levelLoaded.height, levelLoaded.holes, levelLoaded.boxes);
 		
 		clouds = new Clouds(main);
 	}

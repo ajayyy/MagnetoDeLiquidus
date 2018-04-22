@@ -28,7 +28,7 @@ public class Main extends ApplicationAdapter {
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
 		
-		level = new Level(this);
+		level = new Level(this, new Level1());
 	}
 	
 	@Override

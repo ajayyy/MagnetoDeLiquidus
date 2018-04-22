@@ -50,17 +50,13 @@ public class ParticleBox {
 	ArrayList<Hole> holes = new ArrayList<Hole>();
 	ArrayList<Box> boxes = new ArrayList<Box>();
 	
-	public ParticleBox(Main main, int width, int height) {
+	public ParticleBox(Main main, int width, int height, ArrayList<Hole> holes, ArrayList<Box> boxes) {
 		this.main = main;
 		
 		this.width = width;
 		this.height = height;
-		
-		//add all of the holes
-		holes.add(new Hole(150, 300, 2));
-		
-		//add all the boxes
-		boxes.add(new Box(100, 200, 100, 100));
+		this.holes = holes;
+		this.boxes = boxes;
 		
 		allParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
 		horizontallyBlurredParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
