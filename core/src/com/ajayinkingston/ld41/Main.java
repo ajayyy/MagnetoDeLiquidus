@@ -8,12 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.math.Matrix4;
 
 public class Main extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -38,8 +33,20 @@ public class Main extends ApplicationAdapter {
 	
 	@Override
 	public void resize(int width, int height) {
-		cam.viewportWidth = width * 1f;
-     	cam.viewportHeight = height * 1f;
+		((OrthographicCamera) cam).setToOrtho(false, width, height);
+		resizeBatch(cam.combined);
+	}
+	
+	public void resizeBatch(Matrix4 matrix) {
+     	batch.setProjectionMatrix(matrix);
+		shapeRenderer.setProjectionMatrix(matrix);
+		cam.update();
+	}
+	
+	public void resizeBatch(int width, int height) {
+		Matrix4 projectionMatrix = new Matrix4();
+		projectionMatrix.setToOrtho2D(0, 0, width, height);
+		resizeBatch(projectionMatrix);
 	}
 
 	@Override

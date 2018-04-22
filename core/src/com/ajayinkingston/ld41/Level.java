@@ -6,8 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
@@ -29,7 +30,8 @@ public class Level {
 	ArrayList<Particle> particles = new ArrayList<>();
 	
 	ShaderProgram blurShader;
-	
+	ShaderProgram flattenShader;
+
 	Texture particleImage;
 	
 	FrameBuffer allParticles;
@@ -42,17 +44,22 @@ public class Level {
 		
 		allParticles = new FrameBuffer(Format.RGBA8888, 1000, 600, false);
 		horizontallyBlurredParticles = new FrameBuffer(Format.RGBA8888, 1000, 600, false);
+		verticallyBlurredParticles = new FrameBuffer(Format.RGBA8888, 1000, 600, false);
 		
 		fboRegion = new TextureRegion(allParticles.getColorBufferTexture());
 		fboRegion.flip(false, true);
 		
 		particleImage = new Texture("white.png");
+//		particleImage.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		//partcile shader
 		blurShader = new ShaderProgram(Gdx.files.internal("shaders/blur.vsh"), Gdx.files.internal("shaders/blur.fsh"));
+		flattenShader = new ShaderProgram(Gdx.files.internal("shaders/flatten.vsh"), Gdx.files.internal("shaders/flatten.fsh"));
 		
 		if (blurShader.getLog().length()!=0)
-			System.out.println(blurShader.getLog());
+			System.out.println("blur error: \n\n" + blurShader.getLog());
+		if (flattenShader.getLog().length()!=0)
+			System.out.println("flatten error: \n\n" + flattenShader.getLog());
 		
 		ShaderProgram.pedantic = false;
 		
@@ -180,6 +187,9 @@ public class Level {
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		//resize batch to this simulation size
+		main.resizeBatch(1000, 600);
+		
 		main.batch.begin();
 		
 		main.batch.setShader(null);
@@ -229,37 +239,53 @@ public class Level {
 		allParticles.end();
 		
 		horizontallyBlurredParticles.begin();
-		//clear frame buffer
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		blurShader.begin();
 		
 		main.batch.setShader(blurShader);
-		blurShader.setUniformf("dir", 1f, 0f);
-		blurShader.setUniformf("resolution", 1000*600);
-		blurShader.setUniformf("radius", 20f);
+		blurShader.setUniformf("dir", 2.7f, 0f);
+		blurShader.setUniformf("resolution", 1000);
 		
 		fboRegion.setTexture(allParticles.getColorBufferTexture());
+		fboRegion.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		main.batch.draw(fboRegion, 0, 0);
 		
 		main.batch.flush();
 		horizontallyBlurredParticles.end();
 		
-		//now do a vertical blur
+		verticallyBlurredParticles.begin();
 		
+		//now do a vertical blur
 		main.batch.setShader(blurShader);
-		blurShader.setUniformf("dir", 0f, 1f);
-		blurShader.setUniformf("resolution", 1000*600);
-		blurShader.setUniformf("radius", 20f);
+		blurShader.setUniformf("dir", 0f, 2.7f);
+		blurShader.setUniformf("resolution", 600);
 		
 		fboRegion.setTexture(horizontallyBlurredParticles.getColorBufferTexture());
+		fboRegion.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		main.batch.draw(fboRegion, 0, 0);
+		
+		main.batch.flush();
+		verticallyBlurredParticles.end();
+		blurShader.end();
+		
+		//resize the batch back to normal
+		main.resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		flattenShader.begin();
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		//now do flatten
+		main.batch.setShader(flattenShader);
+		
+		fboRegion.setTexture(verticallyBlurredParticles.getColorBufferTexture());
 		
 		main.batch.draw(fboRegion, 0, 0);
 		
 		main.batch.end();
-		blurShader.end();
+		flattenShader.end();
 
 	}
 	
