@@ -46,11 +46,17 @@ public class ParticleBox {
 	//to make the box centered there is an offset
 	int offsetx, offsety;
 	
+	//all of the holes in the wall
+	ArrayList<Hole> holes = new ArrayList<Hole>();
+	
 	public ParticleBox(Main main, int width, int height) {
 		this.main = main;
 		
 		this.width = width;
 		this.height = height;
+		
+		//add all of the holes
+		holes.add(new Hole(150, 200, 3));
 		
 		allParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
 		horizontallyBlurredParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
@@ -168,11 +174,44 @@ public class ParticleBox {
 		
 		float thickness = 7;
 		
-		main.shapeRenderer.rect(offsetx - thickness, offsety, thickness, height);
-		main.shapeRenderer.rect(offsetx + width, offsety, thickness, height);
+		float leftLastDrawn = 0;
+		float rightLastDrawn = 0;
+		float topLastDrawn = 0;
+		float bottomLastDrawn = 0;
 		
-		main.shapeRenderer.rect(offsetx - thickness, offsety - thickness, width + thickness * 2, thickness);
-		main.shapeRenderer.rect(offsetx - thickness, offsety + height, width + thickness * 2, thickness);
+		for(Hole hole : holes) {
+			switch(hole.side) {
+			case 0:
+				main.shapeRenderer.rect(offsetx - thickness, offsety + leftLastDrawn, thickness, hole.start - leftLastDrawn);
+				leftLastDrawn = hole.end;
+				break;
+			case 1:
+				main.shapeRenderer.rect(offsetx + width, offsety + rightLastDrawn, thickness, hole.start - rightLastDrawn);
+				rightLastDrawn = hole.end;
+				break;
+			case 2:
+				main.shapeRenderer.rect(offsetx - thickness + topLastDrawn, offsety - thickness, hole.start - topLastDrawn, thickness);
+				topLastDrawn = hole.end;
+				break;
+			case 3:
+				main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, hole.start - bottomLastDrawn, thickness);
+				bottomLastDrawn = hole.end;
+			}
+		}
+		
+		if(leftLastDrawn < height) {
+			main.shapeRenderer.rect(offsetx - thickness, offsety + leftLastDrawn, thickness, height - leftLastDrawn);
+		}
+		if(rightLastDrawn < height) {
+			main.shapeRenderer.rect(offsetx + width, offsety + rightLastDrawn, thickness, height - rightLastDrawn);
+		}
+		
+		if(topLastDrawn < width + thickness * 2) {
+			main.shapeRenderer.rect(offsetx - thickness + topLastDrawn, offsety - thickness, width + thickness * 2 - topLastDrawn, thickness);
+		}
+		if(bottomLastDrawn < width + thickness * 2) {
+			main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
+		}
 		
 		main.shapeRenderer.end();
 
