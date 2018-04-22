@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -239,6 +241,22 @@ public class ParticleBox {
 		
 		main.batch.end();
 		flattenShader.end();
+		
+		//draw border
+		
+		main.shapeRenderer.begin(ShapeType.Filled);
+		
+		main.shapeRenderer.setColor(Color.BLACK);
+		
+		float thickness = 5;
+		
+		main.shapeRenderer.rect(offsetx - thickness, offsety, thickness, height);
+		main.shapeRenderer.rect(offsetx + width, offsety, thickness, height);
+		
+		main.shapeRenderer.rect(offsetx - thickness, offsety - thickness, width + thickness * 2, thickness);
+		main.shapeRenderer.rect(offsetx - thickness, offsety + height, width + thickness * 2, thickness);
+		
+		main.shapeRenderer.end();
 
 	}
 	
