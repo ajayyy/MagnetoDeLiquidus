@@ -38,7 +38,9 @@ public class Level {
 		//partcile shader
 		particleShader = new ShaderProgram(Gdx.files.internal("shaders/particle.vsh"), Gdx.files.internal("shaders/particle.fsh"));
 		
-		System.out.println(Gdx.files.internal("shaders/particle.vsh").readString());
+		if (particleShader.getLog().length()!=0)
+			System.out.println(particleShader.getLog());
+		
 		particleShader.pedantic = false;
 		
 		world = new World(new Vector2(0, -0), true);
@@ -159,11 +161,17 @@ public class Level {
 	public void render() {
 		
 		world.step(1/60f, 6, 2);
-
+		
 		particleShader.begin();
+
 		main.batch.begin();
 		
 		main.batch.setShader(particleShader);
+		
+		particleShader.setUniformf("dir", 1f, 0f);
+		particleShader.setUniformf("resolution", 1000*600);
+		//determine radius of blur based on mouse position
+		particleShader.setUniformf("radius", 20f);
 		
 		for(Particle particle: particles) {
 			
