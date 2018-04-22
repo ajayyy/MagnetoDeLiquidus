@@ -33,6 +33,11 @@ public class Main extends ApplicationAdapter {
 	
 	@Override
 	public void resize(int width, int height) {
+		
+//		int targetHeight = 600;
+//		width = (int) (width/(float)height * targetHeight);
+//		height = targetHeight;
+		
 		((OrthographicCamera) cam).setToOrtho(false, width, height);
 		resizeBatch(cam.combined);
 		
@@ -72,4 +77,5 @@ public class Main extends ApplicationAdapter {
 		batch.dispose();
 		img.dispose();
 	}
+	
 }

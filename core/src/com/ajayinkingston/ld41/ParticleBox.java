@@ -101,89 +101,7 @@ public class ParticleBox {
         // Shape is the only disposable of the lot, so get rid of it
         shape.dispose();
         
-        {
-	        BodyDef groundDef = new BodyDef();
-	        groundDef.type = BodyDef.BodyType.KinematicBody;
-	        
-	        PolygonShape ground = new PolygonShape();
-	        ground.setAsBox(width, Particle.getRadius());
-	        
-	        groundDef.position.set(0, 0);
-	        
-	        Body body = world.createBody(groundDef);
-	
-	        FixtureDef fixtureDef = new FixtureDef();
-	        fixtureDef.shape = ground;
-	        fixtureDef.density = 0.00000001f;
-	        fixtureDef.friction = 1f;
-	        
-	        Fixture fixture = body.createFixture(fixtureDef);
-	        
-	        ground.dispose();
-        }
-        
-        {
-	        BodyDef groundDef = new BodyDef();
-	        groundDef.type = BodyDef.BodyType.KinematicBody;
-	        
-	        PolygonShape ground = new PolygonShape();
-	        ground.setAsBox(5, height);
-	        
-	        groundDef.position.set(0, 0);
-	        
-	        Body body = world.createBody(groundDef);
-	
-	        FixtureDef fixtureDef = new FixtureDef();
-	        fixtureDef.shape = ground;
-	        fixtureDef.density = 0.00000001f;
-	        fixtureDef.friction = 1f;
-	        
-	        Fixture fixture = body.createFixture(fixtureDef);
-	        
-	        ground.dispose();
-        }
-        
-        {
-	        BodyDef groundDef = new BodyDef();
-	        groundDef.type = BodyDef.BodyType.KinematicBody;
-	        
-	        PolygonShape ground = new PolygonShape();
-	        ground.setAsBox(width, Particle.getRadius());
-	        
-	        groundDef.position.set(0, height);
-	        
-	        Body body = world.createBody(groundDef);
-	
-	        FixtureDef fixtureDef = new FixtureDef();
-	        fixtureDef.shape = ground;
-	        fixtureDef.density = 0.00000001f;
-	        fixtureDef.friction = 1f;
-	        
-	        Fixture fixture = body.createFixture(fixtureDef);
-	        
-	        ground.dispose();
-        }
-        
-        {
-	        BodyDef groundDef = new BodyDef();
-	        groundDef.type = BodyDef.BodyType.KinematicBody;
-	        
-	        PolygonShape ground = new PolygonShape();
-	        ground.setAsBox(5, height);
-	        
-	        groundDef.position.set(width, 0);
-	        
-	        Body body = world.createBody(groundDef);
-	
-	        FixtureDef fixtureDef = new FixtureDef();
-	        fixtureDef.shape = ground;
-	        fixtureDef.density = 0.00000001f;
-	        fixtureDef.friction = 1f;
-	        
-	        Fixture fixture = body.createFixture(fixtureDef);
-	        
-	        ground.dispose();
-        }
+        generateWalls();
         
         particles.get(0).body.applyForceToCenter(new Vector2(50000, 0), true);
 	}
@@ -248,7 +166,7 @@ public class ParticleBox {
 		
 		main.shapeRenderer.setColor(Color.BLACK);
 		
-		float thickness = 5;
+		float thickness = 7;
 		
 		main.shapeRenderer.rect(offsetx - thickness, offsety, thickness, height);
 		main.shapeRenderer.rect(offsetx + width, offsety, thickness, height);
@@ -335,5 +253,91 @@ public class ParticleBox {
 				particles.get(i).body.applyForceToCenter(dir.scl(50000), true);
 			}
 		}
+	}
+	
+	public void generateWalls() {
+		{
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(width, Particle.getRadius());
+	        
+	        groundDef.position.set(0, 0);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
+        
+        {
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(5, height);
+	        
+	        groundDef.position.set(0, 0);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
+        
+        {
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(width, Particle.getRadius());
+	        
+	        groundDef.position.set(0, height);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
+        
+        {
+	        BodyDef groundDef = new BodyDef();
+	        groundDef.type = BodyDef.BodyType.KinematicBody;
+	        
+	        PolygonShape ground = new PolygonShape();
+	        ground.setAsBox(5, height);
+	        
+	        groundDef.position.set(width, 0);
+	        
+	        Body body = world.createBody(groundDef);
+	
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = ground;
+	        fixtureDef.density = 0.00000001f;
+	        fixtureDef.friction = 1f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+	        ground.dispose();
+        }
 	}
 }
