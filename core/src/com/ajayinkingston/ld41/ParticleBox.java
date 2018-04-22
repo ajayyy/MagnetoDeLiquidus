@@ -186,12 +186,7 @@ public class ParticleBox {
         particles.get(0).body.applyForceToCenter(new Vector2(50000, 0), true);
 	}
 	
-	public void render() {
-		
-//		main.cam.position.x += 1;
-		
-		world.step(1f, 6, 2);
-		
+	public void prerender() {
 		allParticles.begin();
 		//clear frame buffer
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
@@ -211,40 +206,6 @@ public class ParticleBox {
 //			particleShapeRenderer.circle(particle.body.getPosition().x, particle.body.getPosition().y, Particle.getRadius());
 		}
 		
-		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).sub(offsetx, offsety, 0);
-			
-			BodyDef bodyDef = new BodyDef();
-	        bodyDef.type = BodyDef.BodyType.DynamicBody;
-	        
-	        CircleShape shape = new CircleShape();
-	        shape.setRadius(Particle.getRadius());
-			
-			bodyDef.position.set(mousePos.x, mousePos.y);
-	        
-	        Body body = world.createBody(bodyDef);
-
-	        FixtureDef fixtureDef = new FixtureDef();
-	        fixtureDef.shape = shape;
-	        fixtureDef.density = 1f;
-	        fixtureDef.friction = 1f;
-//	        fixtureDef.restitution = 0.5f;
-	        
-	        Fixture fixture = body.createFixture(fixtureDef);
-	        
-			particles.add(new Particle(body));
-		}
-		
-		if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-			for(int i = 0; i < particles.size(); i++) {
-				Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).sub(offsetx, offsety, 0);
-				
-				Vector2 dir = particles.get(i).getPosition().sub(mousePos.x, mousePos.y).nor();
-				
-				particles.get(i).body.applyForceToCenter(dir.scl(50000), true);
-			}
-		}
-		
 		main.batch.flush();
 		allParticles.end();
 		
@@ -256,10 +217,18 @@ public class ParticleBox {
 		
 		//resize the batch back to normal
 		main.resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		flattenShader.begin();
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0.768627451f, 0.768627451f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		main.batch.end();
+		
+	}
+	
+	public void render() {
+		
+		main.batch.begin();
+		
+		flattenShader.begin();
 
 		//now do flatten
 		main.batch.setShader(flattenShader);
@@ -313,6 +282,40 @@ public class ParticleBox {
 	}
 	
 	public void update() {
+		world.step(1f, 6, 2);
 		
+		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).sub(offsetx, offsety, 0);
+			
+			BodyDef bodyDef = new BodyDef();
+	        bodyDef.type = BodyDef.BodyType.DynamicBody;
+	        
+	        CircleShape shape = new CircleShape();
+	        shape.setRadius(Particle.getRadius());
+			
+			bodyDef.position.set(mousePos.x, mousePos.y);
+	        
+	        Body body = world.createBody(bodyDef);
+
+	        FixtureDef fixtureDef = new FixtureDef();
+	        fixtureDef.shape = shape;
+	        fixtureDef.density = 1f;
+	        fixtureDef.friction = 1f;
+//	        fixtureDef.restitution = 0.5f;
+	        
+	        Fixture fixture = body.createFixture(fixtureDef);
+	        
+			particles.add(new Particle(body));
+		}
+		
+		if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+			for(int i = 0; i < particles.size(); i++) {
+				Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).sub(offsetx, offsety, 0);
+				
+				Vector2 dir = particles.get(i).getPosition().sub(mousePos.x, mousePos.y).nor();
+				
+				particles.get(i).body.applyForceToCenter(dir.scl(50000), true);
+			}
+		}
 	}
 }
