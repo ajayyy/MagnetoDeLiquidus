@@ -1,35 +1,26 @@
 package com.ajayinkingston.ld41;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-
 public class Level {
 	
 	Main main;
 	
 	ParticleBox particleBox;
 	
-	Texture cloud;
+	Clouds clouds;
 	
 	public Level(Main main) {
 		this.main = main;
 		
 		particleBox = new ParticleBox(main, 400, 500);
 		
-		cloud = new Texture("cloud0.png");
+		clouds = new Clouds(main);
 	}
 	
 	public void render() {
 		
 		particleBox.prerender();
 		
-		main.batch.begin();
-		
-		main.batch.setShader(null);
-		
-		main.batch.draw(cloud, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-		
-		main.batch.end();
+		clouds.render();
 		
 		particleBox.render();
 		
@@ -37,6 +28,8 @@ public class Level {
 	
 	public void update() {
 		particleBox.update();
+		
+		clouds.update();
 	}
 	
 	public void resize(int width, int height) {
