@@ -13,9 +13,6 @@ public class DesktopLauncher {
 		
 		config.foregroundFPS = 60;
 		
-		config.samples = 4;
-
-		
 		new LwjglApplication(new Main(), config);
 	}
 }
