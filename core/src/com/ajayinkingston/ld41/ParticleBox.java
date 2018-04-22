@@ -48,6 +48,7 @@ public class ParticleBox {
 	
 	//all of the holes in the wall
 	ArrayList<Hole> holes = new ArrayList<Hole>();
+	ArrayList<Box> boxes = new ArrayList<Box>();
 	
 	public ParticleBox(Main main, int width, int height) {
 		this.main = main;
@@ -56,7 +57,10 @@ public class ParticleBox {
 		this.height = height;
 		
 		//add all of the holes
-		holes.add(new Hole(150, 200, 3));
+		holes.add(new Hole(150, 300, 0));
+		
+		//add all the boxes
+		boxes.add(new Box(100, 200, 100, 100));
 		
 		allParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
 		horizontallyBlurredParticles = new FrameBuffer(Format.RGBA8888, width, height, false);
@@ -213,6 +217,11 @@ public class ParticleBox {
 			main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
 		}
 		
+		//draw all boxes
+		for(Box box : boxes) {
+			main.shapeRenderer.rect(offsetx + box.x, offsety + box.y, box.width, box.height);
+		}
+		
 		main.shapeRenderer.end();
 
 	}
@@ -316,7 +325,48 @@ public class ParticleBox {
 	}
 	
 	public void generateWalls() {
-		createWall(0, 0, Particle.getRadius(), height);
+		float thickness = 7;
+		
+		float leftLastDrawn = 0;
+		float rightLastDrawn = 0;
+		float topLastDrawn = 0;
+		float bottomLastDrawn = 0;
+		
+		for(Hole hole : holes) {
+			switch(hole.side) {
+			case 0:
+				createWall(0, leftLastDrawn, Particle.getRadius(), hole.start - leftLastDrawn);
+				leftLastDrawn = hole.end;
+				break;
+			case 1:
+				main.shapeRenderer.rect(offsetx + width, offsety + rightLastDrawn, thickness, hole.start - rightLastDrawn);
+				rightLastDrawn = hole.end;
+				break;
+			case 2:
+				main.shapeRenderer.rect(offsetx - thickness + topLastDrawn, offsety - thickness, hole.start - topLastDrawn, thickness);
+				topLastDrawn = hole.end;
+				break;
+			case 3:
+				main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, hole.start - bottomLastDrawn, thickness);
+				bottomLastDrawn = hole.end;
+			}
+		}
+		
+		if(leftLastDrawn < height) {
+			createWall(0, leftLastDrawn + 200, Particle.getRadius(), height - leftLastDrawn);
+		}
+//		if(rightLastDrawn < height) {
+//			main.shapeRenderer.rect(offsetx + width, offsety + rightLastDrawn, thickness, height - rightLastDrawn);
+//		}
+//		
+//		if(topLastDrawn < width + thickness * 2) {
+//			main.shapeRenderer.rect(offsetx - thickness + topLastDrawn, offsety - thickness, width + thickness * 2 - topLastDrawn, thickness);
+//		}
+//		if(bottomLastDrawn < width + thickness * 2) {
+//			main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
+//		}
+		
+//		createWall(0, 0, Particle.getRadius(), height);
 		
 		createWall(width, 0, Particle.getRadius(), height);
 		
