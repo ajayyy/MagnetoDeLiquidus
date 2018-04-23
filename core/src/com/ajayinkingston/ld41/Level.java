@@ -1,5 +1,8 @@
 package com.ajayinkingston.ld41;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+
 public class Level {
 	
 	Main main;
@@ -8,12 +11,16 @@ public class Level {
 	
 	Clouds clouds;
 	
+	ProgressBar particlesLeft;
+	
 	public Level(Main main, LevelBase levelLoaded) {
 		this.main = main;
 		
 		particleBox = new ParticleBox(main, levelLoaded);
 		
 		clouds = new Clouds(main);
+		
+		particlesLeft = new ProgressBar(30, Gdx.graphics.getHeight() - 100, 200, 50, Color.GREEN, main);
 	}
 	
 	public void render() {
@@ -24,12 +31,11 @@ public class Level {
 		
 		particleBox.render();
 		
+		particlesLeft.render(particleBox.particles.size() / (float)particleBox.loadedLevel.startAmount);
 	}
 	
 	public void update() {
 		particleBox.update();
-		
-		System.out.println(particleBox.particles.size()/(float)particleBox.loadedLevel.startAmount);
 		
 		clouds.update();
 	}
