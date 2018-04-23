@@ -52,6 +52,9 @@ public class ParticleBox {
 	ArrayList<Hole> holes = new ArrayList<Hole>();
 	ArrayList<Box> boxes = new ArrayList<Box>();
 	
+	//time holding the mouse button
+	float timeHolding;
+	
 	public ParticleBox(Main main, LevelBase loadedLevel) {
 		this.main = main;
 		
@@ -274,30 +277,6 @@ public class ParticleBox {
 		}
 		
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).sub(offsetx, offsety, 0);
-			
-			BodyDef bodyDef = new BodyDef();
-	        bodyDef.type = BodyDef.BodyType.DynamicBody;
-	        
-	        CircleShape shape = new CircleShape();
-	        shape.setRadius(Particle.getRadius());
-			
-			bodyDef.position.set(mousePos.x, mousePos.y);
-	        
-	        Body body = world.createBody(bodyDef);
-
-	        FixtureDef fixtureDef = new FixtureDef();
-	        fixtureDef.shape = shape;
-	        fixtureDef.density = 1f;
-	        fixtureDef.friction = 1f;
-//	        fixtureDef.restitution = 0.5f;
-	        
-	        Fixture fixture = body.createFixture(fixtureDef);
-	        
-			particles.add(new Particle(body));
-		}
-		
-		if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
 			for(int i = 0; i < particles.size(); i++) {
 				Vector3 mousePos = main.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).sub(offsetx, offsety, 0);
 				
@@ -305,6 +284,8 @@ public class ParticleBox {
 				
 				particles.get(i).body.applyForceToCenter(dir.scl(50000), true);
 			}
+			
+			timeHolding += Gdx.graphics.getRawDeltaTime();
 		}
 	}
 	
@@ -365,10 +346,10 @@ public class ParticleBox {
 		}
 		
 		if(topLastDrawn < width + thickness * 2) {
-			createWall(- thickness + topLastDrawn, - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
+			createWall(- thickness + topLastDrawn, - thickness, width + thickness * 2 - topLastDrawn, thickness);
 		}
 		if(bottomLastDrawn < width + thickness * 2) {
-			createWall(- thickness + topLastDrawn, height - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
+			createWall(- thickness + bottomLastDrawn, height - thickness, width + thickness * 2 - bottomLastDrawn, thickness);
 		}
 		
 		//create walls for the boxes

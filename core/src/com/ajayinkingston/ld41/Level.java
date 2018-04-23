@@ -12,6 +12,7 @@ public class Level {
 	Clouds clouds;
 	
 	ProgressBar particlesLeft;
+	ProgressBar timeLeft;
 	
 	public Level(Main main, LevelBase levelLoaded) {
 		this.main = main;
@@ -21,6 +22,7 @@ public class Level {
 		clouds = new Clouds(main);
 		
 		particlesLeft = new ProgressBar(30, Gdx.graphics.getHeight() - 100, 200, 50, new Color(45/255f, 155/255f, 56/255f, 1), main);
+		timeLeft = new ProgressBar(30, Gdx.graphics.getHeight() - 200, 200, 50, new Color(93/255f, 117/255f, 239/255f, 1), main);
 	}
 	
 	public void render() {
@@ -32,6 +34,9 @@ public class Level {
 		particleBox.render();
 		
 		particlesLeft.render(particleBox.particles.size() / (float)particleBox.loadedLevel.startAmount);
+		
+		timeLeft.render(1 - particleBox.timeHolding / (float)particleBox.loadedLevel.timeToHold);
+
 	}
 	
 	public void update() {
