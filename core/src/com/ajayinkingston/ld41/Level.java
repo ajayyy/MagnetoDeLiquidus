@@ -20,7 +20,7 @@ public class Level {
 		
 		clouds = new Clouds(main);
 		
-		particlesLeft = new ProgressBar(30, Gdx.graphics.getHeight() - 100, 200, 50, Color.GREEN, main);
+		particlesLeft = new ProgressBar(30, Gdx.graphics.getHeight() - 100, 200, 50, new Color(45/255f, 155/255f, 56/255f, 1), main);
 	}
 	
 	public void render() {

@@ -5,7 +5,7 @@ public class Level1 extends LevelBase {
 		width = 400;
 		height = 500;
 		
-		startAmount = 20;
+		startAmount = 25;
 		
 		//add all of the holes
 		holes.add(new Hole(150, 300, 2));
