@@ -19,6 +19,8 @@ public class Main extends ApplicationAdapter {
 	
 	Level level;
 	
+	LevelBase[] levels = {new Level1(), new Level2(), new Level3(), new Level4(), new Level5(), new Level6()};
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -28,7 +30,7 @@ public class Main extends ApplicationAdapter {
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
 		
-		level = new Level(this, new Level1());
+		level = new Level(this, new Level4());
 	}
 	
 	@Override
@@ -67,9 +69,23 @@ public class Main extends ApplicationAdapter {
 		
 		level.update();
 		
+		if(level.particleBox.timeHolding >= level.particleBox.loadedLevel.timeToHold) {
+			restart();
+		}
+		
+		if(level.particleBox.particles.size() <=0) {
+			level = new Level(this, levels[level.particleBox.loadedLevel.level]);
+			level.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		}
+		
 //		batch.begin();
 //		batch.draw(img, 0, 0);
 //		batch.end();
+	}
+	
+	public void restart() {
+		level = new Level(this, level.particleBox.loadedLevel);
+		level.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	@Override

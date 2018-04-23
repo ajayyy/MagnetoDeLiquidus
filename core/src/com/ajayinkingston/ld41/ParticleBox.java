@@ -189,18 +189,38 @@ public class ParticleBox {
 			case 0:
 				main.shapeRenderer.rect(offsetx - thickness, offsety + leftLastDrawn, thickness, hole.start - leftLastDrawn);
 				leftLastDrawn = hole.end;
+				if(hole.evil) {
+					main.shapeRenderer.setColor(Color.RED);
+					main.shapeRenderer.rect(offsetx - thickness, offsety + hole.start, thickness, hole.end);
+					main.shapeRenderer.setColor(Color.BLACK);
+				}
 				break;
 			case 1:
 				main.shapeRenderer.rect(offsetx + width, offsety + rightLastDrawn, thickness, hole.start - rightLastDrawn);
 				rightLastDrawn = hole.end;
+				if(hole.evil) {
+					main.shapeRenderer.setColor(Color.RED);
+					main.shapeRenderer.rect(offsetx + width, offsety + hole.start, thickness, hole.end);
+					main.shapeRenderer.setColor(Color.BLACK);
+				}
 				break;
 			case 2:
 				main.shapeRenderer.rect(offsetx - thickness + topLastDrawn, offsety - thickness, hole.start - topLastDrawn, thickness);
 				topLastDrawn = hole.end;
+				if(hole.evil) {
+					main.shapeRenderer.setColor(Color.RED);
+					main.shapeRenderer.rect(offsetx - thickness + hole.start, offsety - thickness, hole.end, thickness);
+					main.shapeRenderer.setColor(Color.BLACK);
+				}
 				break;
 			case 3:
 				main.shapeRenderer.rect(offsetx - thickness + bottomLastDrawn, offsety + height - thickness, hole.start - bottomLastDrawn, thickness);
 				bottomLastDrawn = hole.end;
+				if(hole.evil) {
+					main.shapeRenderer.setColor(Color.RED);
+					main.shapeRenderer.rect(offsetx - thickness + hole.start, offsety + height - thickness, hole.end, thickness);
+					main.shapeRenderer.setColor(Color.BLACK);
+				}
 			}
 		}
 		
@@ -272,6 +292,24 @@ public class ParticleBox {
 		//check if any particles have left the area
 		for(Particle particle : new ArrayList<Particle>(particles)) {
 			if(particle.getPosition().x < 0 || particle.getPosition().x > width || particle.getPosition().y < 0 || particle.getPosition().y > height) {
+				for (Hole hole : holes) {
+					if(hole.evil) {
+						if(hole.side <= 1) {
+							if(hole.start < particle.getPosition().y && hole.end > particle.getPosition().y) {
+								if((hole.side == 0 && particle.getPosition().x < 0) || (hole.side == 1 && particle.getPosition().x > width)) {
+									main.restart();
+								}
+							}
+						} else {
+							if(hole.start < particle.getPosition().x && hole.end > particle.getPosition().x) {
+								if((hole.side == 2 && particle.getPosition().y < 0) || (hole.side == 3 && particle.getPosition().y > height)) {
+									main.restart();
+								}
+							}
+						}
+					}
+				}
+				
 				particles.remove(particle);
 			}
 		}
