@@ -13,6 +13,8 @@ public class DesktopLauncher {
 		
 		config.foregroundFPS = 60;
 		
+//		System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
+		
 		new LwjglApplication(new Main(), config);
 	}
 }

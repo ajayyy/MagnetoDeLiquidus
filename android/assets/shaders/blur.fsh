@@ -1,8 +1,6 @@
-//"in" attributes from our vertex shader
 varying vec4 vColor;
 varying vec2 vTexCoord;
 
-//declare uniforms
 uniform sampler2D u_texture;
 uniform float resolution;
 uniform vec2 dir;
@@ -10,6 +8,7 @@ uniform vec2 dir;
 void blur() {
 	vec4 ocolor = texture2D(u_texture, vTexCoord) * vColor;
 	
+	//add all of the colors plus offsets to create gaussian blur, From https://github.com/Jam3/glsl-fast-gaussian-blur
 	vec4 color = vec4(0.0);
 	vec2 off1 = vec2(1.411764705882353) * dir;
 	vec2 off2 = vec2(3.2941176470588234) * dir;
