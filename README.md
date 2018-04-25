@@ -28,3 +28,11 @@ The physics simulations are done with Box-2D. There are shaders also used to mak
 Download the jar file and run it: https://theajayyy.itch.io/magneto-de-liquidus
 
 Web version coming soon.
+
+# Contributing
+
+Make an issue with your planned change, make a pull request with your change
+
+# How to open the project
+
+Download the repository and open it with your preffered Java IDE by opening it as a gradle project.
