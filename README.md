@@ -33,6 +33,12 @@ Web version coming soon.
 
 Make an issue with your planned change, make a pull request with your change
 
-# How to open the project
+# How to build
 
-Download the repository and open it with your preffered Java IDE by opening it as a gradle project.
+Create a file called `local.properties` in the main directory containing: `sdk.dir=[YOURSDKLOCATIONHERE]`. Make sure to put in the path to your Android SDK.
+
+Use eclipse and load it as a gradle project.
+
+`File -> Import -> Gradle Project`
+
+For HTML, you must install the GWT plugin in eclipse.
